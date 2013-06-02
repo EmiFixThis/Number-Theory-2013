@@ -1,0 +1,124 @@
+//Kristi Short
+//Linear Congruences
+//5/31/2013
+
+package Congruence;
+
+import java.util.*;
+
+
+
+public class linearCongruence {
+
+  private static Scanner userInput(String prompt) {
+		Scanner scan = new Scanner (System.in);
+		System.out.println(prompt);
+		return scan;
+	}//userInput
+
+
+
+	//GCD Method (Euclidian)
+	public static int eGCD(double valueA, int valueB){
+		if(valueA==0){
+			return valueB;
+		}
+		while(valueB != 0){
+			if(valueA>valueB){
+				valueA = valueA - valueB;
+			}else{
+				valueB = (int) (valueB - valueA);
+			}
+		}
+		return (int) valueA;
+	}//eGCD
+
+
+
+	//Extended GCD Method (Euclidean)
+	public static int[] extendedGCD(int valueA, int valueC){
+		int[] x = {valueA, 1, 0};
+		int temp = 0;
+		if (valueC == 0){
+			return x;
+		}else{
+			x = extendedGCD(valueC, valueA%valueC);
+			temp = x[1];
+			x[1] = x[2];
+			x[2] = temp - (valueA/valueC)*x[2];
+			return x;
+		}//if
+	}//extendedGCD
+
+	//Linear Congruence Method
+	public static int[] linear(int valueC, int valueM, int valueA){
+	
+		int myVarLinear[] = extendedGCD(valueA, valueM);
+		int myGCD = myVarLinear[0];
+		int myX = myVarLinear[1];
+		int k =1;
+
+		if(valueC%myGCD == 0){
+			System.out.println("There are exactly " + myGCD + " solutions to the congruence");
+			if(myGCD == valueC){
+
+				while(k<myGCD){
+					int Solution2 = myX + k*(valueM/myGCD)%valueM;
+					System.out.println("Solution: " + Solution2);
+					int [] solution = {Solution2};
+					System.out.println(solution);
+					k++;
+				}//while
+			}else{
+				while(k < myGCD){
+					int fix = (valueC/myGCD);
+					int plug = myVarLinear[1]*fix;
+					int solution1 = plug + k*(valueM/myGCD);
+					if(solution1<0){
+						solution1 = valueM + solution1;
+						int [] solution = {solution1};
+						System.out.println(Arrays.toString(solution));
+					}
+					int [] solution = {solution1};
+					System.out.println(Arrays.toString(solution));
+					k++;
+				}//if
+			}
+		}else{
+			System.out.println("There are no solutions to this congruence.");
+		}//if
+
+		
+
+
+		return myVarLinear;
+	}//linear
+
+
+	public static void main(String[] args) {
+		Scanner input;
+
+		input = userInput("Please enter the value of a: ");
+		int valueA = input.nextInt();
+		System.out.println("You have entered: " + valueA);
+
+		System.out.println("\nThe solutions print in the form [ gcd, x, y].)");
+		System.out.println("\nWe solve the congruence ax is congruent to c (mod m)");
+
+		input = userInput("Please enter a value for C: ");
+		int valueC = input.nextInt();
+		System.out.println("You have entered: " + valueC);
+
+		input = userInput("Please enter a value for m (the modulus): ");
+		int valueM = input.nextInt();
+		System.out.println("You have entered: " + valueM);
+
+		System.out.println("The extendedGCD values are: " );
+		System.out.println(Arrays.toString(extendedGCD(valueA, valueM)));
+		
+		System.out.println(Arrays.toString(linear(valueC, valueM, valueA)));
+
+
+	}//main
+
+}
